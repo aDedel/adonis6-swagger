@@ -1,0 +1,35 @@
+{{{
+  exports({
+    to: app.configPath('swagger.ts')
+  })
+}}}
+import { SwaggerConfig } from '@dedel.alex/adonis6-swagger/types'
+
+export default {
+  // Disable/Enable swaggerUi route
+  uiEnabled: true,
+  // Url path to swaggerUI
+  uiUrl: 'docs',
+  // Disable/Enable swagger.json route
+  specEnabled: true,
+  specUrl: '/swagger.json',
+
+  // List of middlewares to protect your swagger docs and spec endpoints
+  middleware: [],
+
+  options: {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Application with swagger docs',
+        version: '1.0.0',
+        description: 'My application with swagger docs',
+      },
+    },
+
+    apis: ['app/**/*.ts', 'docs/swagger/**/*.yml', 'start/routes.ts'],
+    basePath: '/',
+  },
+  mode: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'RUNTIME',
+  specFilePath: 'docs/swagger.json',
+} as SwaggerConfig
