@@ -25,16 +25,14 @@ Create API documentation easily in Adonis 5 using [Swagger](https://swagger.io/s
 
 # Installation
 ```bash
-npm i --save adonis6-swagger
+npm i --save @dedel.alex/adonis6-swagger
 ```
-Compile your code:
-```bash
-node ace serve --watch
-```
+
 Connect all dependences:
 ```bash
-node ace invoke adonis6-swagger
+node ace configure @dedel.alex/adonis6-swagger
 ```
+
 * For other configuration, please update the `config/swagger.ts`.
 
 # Sample Usage
@@ -46,82 +44,82 @@ node ace invoke adonis6-swagger
 * Create `TestController` using `node ace make:controller Test` command:
 
 ```js
-	import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-	import User from "App/Models/User";
+  import { HttpContext } from "@adonisjs/core/http";
+  import User from "#models/user";
 
-	export default class UsersController {
-		/**
-		* @swagger
-		* /api/users:
-		* post:
-		*     tags:
-		*       - Users
-		*     requestBody:
-		*       required: true
-		*       content:
-		*         application/json:
-		*           description: User payload
-		*           schema:
-		*             type: object
-		*             properties:
-		*               phone:
-		*                 type: string
-		*                 example: 'James Bond'
-		*                 required: true
-		*               email:
-		*                 type: string
-		*                 example: 'Bond007@example.com'
-		*                 required: true
-		*     produces:
-		*       - application/json
-		*     responses:
-		*       200:
-		*         description: Success
-		*         content:
-		*           application/json:
-		*             schema:
-		*               $ref: '#/components/schemas/User'
-		*/
-		public async create({ request, response }: HttpContextContract): Promise<User> {
-				// User saving and returns
-		}
-	}
+  export default class UsersController {
+    /**
+      * @swagger
+      * /api/users:
+      * post:
+      *     tags:
+      *       - Users
+      *     requestBody:
+      *       required: true
+      *       content:
+      *         application/json:
+      *           description: User payload
+      *           schema:
+      *             type: object
+      *             properties:
+      *               phone:
+      *                 type: string
+      *                 example: 'James Bond'
+      *                 required: true
+      *               email:
+      *                 type: string
+      *                 example: 'Bond007@example.com'
+      *                 required: true
+      *     produces:
+      *       - application/json
+      *     responses:
+      *       200:
+      *         description: Success
+      *         content:
+      *           application/json:
+      *             schema:
+      *               $ref: '#/components/schemas/User'
+      */
+    public async create({ request, response }: HttpContext): Promise<User> {
+        // User saving and returns
+    }
+  }
 ```
 
 * You can also define the schema in the Models:
 ```js
-		import {DateTime} from 'luxon'
-		import {BaseModel, column} from '@ioc:Adonis/Lucid/Orm'
+    import { DateTime } from 'luxon'
+    import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-		/**
-		* @swagger
-		* components:
-			* schemas:
-			*      User:
-			*        type: object
-			*        properties:
-			*          name:
-			*            type: string
-			*          email:
-			*            type: string
-			* 
-		*/
-		export default class User extends BaseModel {
-		@column({isPrimary: true})
-		public id: number
-		
-		@column()
-		public name: string
-		
-		@column()
-		public email: string
-		
-		@column.dateTime({autoCreate: true})
-		public createdAt: DateTime
-		
-		@column.dateTime({autoCreate: true, autoUpdate: true})
-		public updatedAt: DateTime
-	}
+    /**
+     * @swagger
+     * components:
+     *   schemas:
+     *     User:
+     *       type: object
+     *       properties:
+     *         name:
+     *           type: string
+     *         email:
+     *           type: string
+     *
+     */
+    export default class User extends BaseModel {
+    @column({isPrimary: true})
+    public id: number
+    
+    @column()
+    public name: string
+    
+    @column()
+    public email: string
+    
+    @column.dateTime({autoCreate: true})
+    public createdAt: DateTime
+    
+    @column.dateTime({autoCreate: true, autoUpdate: true})
+    public updatedAt: DateTime
+  }
   ```
 
 * Or create a separate file containing documentation from the APIs in either TS or YAML formats, sample structure:
@@ -169,7 +167,7 @@ node ace invoke adonis6-swagger
 Open http://localhost:3333/docs in your browser
 For detail usage, please check the Swagger specification in this [SwaggerSpec](https://swagger.io/specification/)
 
-# Custom UI
+# Custom UI - Not tested
 For using custom ui you should use own build of swagger ui. Current package contains only preconfigured and already built ui bundle. For example, you can use [Adonis Edge](https://preview.adonisjs.com/packages/edge) for rendering ui with custom params.
 
 First, install edge:
@@ -188,8 +186,8 @@ node ace make:view swagger
 And then add route for custom UI:
 ```js
 Route.get('/', async ({ view }) => {
-	const specUrl = 'your spec url'
-	return view.render('swagger', { specUrl })
+  const specUrl = 'your spec url'
+  return view.render('swagger', { specUrl })
 })
 ```
 
@@ -197,29 +195,29 @@ Your template should have similar content:
 ```html
 <!DOCTYPE html>
 <head>
-	<script src="//unpkg.com/swagger-ui-dist@3/swagger-ui-standalone-preset.js"></script>
-	<script src="//unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
-	<link rel="stylesheet" href="//unpkg.com/swagger-ui-dist@3/swagger-ui.css"/>
-	<script>
-		window.onload = () => {
-			let ui = SwaggerUIBundle({
-				url: "{{ specUrl }}",
-				dom_id: "#swagger-ui",
-				presets: [
-					SwaggerUIBundle.presets.apis,
-					SwaggerUIBundle.SwaggerUIStandalonePreset
-				],
-				plugins: [
-					SwaggerUIBundle.plugins.DownloadUrl
-				],
-			})
+  <script src="//unpkg.com/swagger-ui-dist@3/swagger-ui-standalone-preset.js"></script>
+  <script src="//unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+  <link rel="stylesheet" href="//unpkg.com/swagger-ui-dist@3/swagger-ui.css"/>
+  <script>
+    window.onload = () => {
+      let ui = SwaggerUIBundle({
+        url: "{{ specUrl }}",
+        dom_id: "#swagger-ui",
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+      })
 
-			window.ui = ui
-		}
-	</script>
+      window.ui = ui
+    }
+  </script>
 </head>
 <body>
-	<div id="swagger-ui"></div>
+  <div id="swagger-ui"></div>
 </body>
 </html>
 ```
@@ -231,7 +229,7 @@ You can build swagger spec file the next way:
 Set `specFilePath` option to your swagger config:
 ```js
 const swaggerConfig = {
-	specFilePath: 'docs/swagger.json'
+  specFilePath: 'docs/swagger.json'
 }
 ```
 And then run adonis command:
@@ -249,20 +247,20 @@ By default RUNTIME mode enabled. When RUNTIME mode enabled package rebuild swagg
 
 # Production using
 For using swagger in production you should make some preparations:
--	Setup swagger config:
+-  Setup swagger config:
 ```js
 const swaggerConfig = { 
-	mode: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'RUNTIME',
-	specFilePath: 'docs/swagger.json'
+  mode: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'RUNTIME',
+  specFilePath: 'docs/swagger.json'
 }
 ```
 - Add post hook for npm build script to your `package.json`:
 ```json
 {
-	"scripts": {
-		"build": "npm run compile",
-		"postbuild": "node ace swagger:generate && cp -a docs/ build/docs"
-	}
+  "scripts": {
+    "build": "npm run compile",
+    "postbuild": "node ace swagger:generate && cp -a docs/ build/docs"
+  }
 }
 ```
 - Deliver your source code to production server.
@@ -273,18 +271,18 @@ const swaggerConfig = {
 Package supports auth via basic auth schema. For using auth you should add config in `config/swagger.ts` 
 
 ```ts
-import Env from '@ioc:Adonis/Core/Env'
+import { Env } from '@adonisjs/core/env';
 
 export default {
-	// ...Swagger congig
-	swaggerAuth: {
-		authMiddleware: 'swagger-auth',
+  // ...Swagger config
+  swaggerAuth: {
+    authMiddleware: 'swagger-auth',
 
-		authCredentials: {
-			login: Env.get('SWAGGER_AUTH_LOGIN'),
-			password: Env.get('SWAGGER_AUTH_PASSWORD')
-		}
-	}
+    authCredentials: {
+      login: Env.get('SWAGGER_AUTH_LOGIN'),
+      password: Env.get('SWAGGER_AUTH_PASSWORD')
+    }
+  }
 }
 ```
 Register auth middleware in your `start/kernel.ts`
@@ -298,18 +296,18 @@ That's all. Your swagger docs secured by basic auth.
 
 Instead of using credentials, you can use function for verifying access in more complex way.
 ```ts
-import Env from '@ioc:Adonis/Core/Env'
-import { verifyDocsAccess } from 'App/Services/Auth/Docs'
+import Env from '@adonisjs/core/env'
+import { verifyDocsAccess } from '#services/auth/docs'
 
 export default {
-	// ...Swagger congig
-	swaggerAuth: {
-		authMiddleware: 'swagger-auth',
+  // ...Swagger config
+  swaggerAuth: {
+    authMiddleware: 'swagger-auth',
 
-		authCheck: async (login, password) => {
-			return await verifyDocsAccess({ login, password })
-		}
-	}
+    authCheck: async (login, password) => {
+      return await verifyDocsAccess({ login, password })
+    }
+  }
 }
 ```
 
@@ -320,52 +318,44 @@ export default {
 Define JWT component inside your `.yaml` declaration:
 ```
 components:
-	securitySchemes:
-		bearerAuth:            
-		type: http
-		scheme: bearer
-		bearerFormat: JWT 
+  securitySchemes:
+    bearerAuth:            
+    type: http
+    scheme: bearer
+    bearerFormat: JWT 
 ```
 Or add to your swagger config:
 ```ts
 export default {
-	// ... config options
-	options: {
-		definition: {
-		openapi: '3.0.0',
-		info: {
-			title: 'Application with swagger docs',
-			version: '1.0.0',
-			description: 'My application with swagger docs'
-		},
-		components: {
-			securitySchemes: {
-			bearerAuth: {
-				type: "http",
-				scheme: "bearer",
-				bearerFormat: "JWT"
-			}
-			}
-		}
-		}
-	//... config options
-	}
+  // ... config options
+  options: {
+    definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Application with swagger docs',
+      version: '1.0.0',
+      description: 'My application with swagger docs'
+    },
+    components: {
+      securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT"
+      }
+      }
+    }
+    }
+  //... config options
+  }
 } as SwaggerConfig
-```
-Then you can add to your controller auth security option:
-```
-@swagger
-/api/users:
-post:
-	security:
-	- bearerAuth: []
 ```
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]:  "typescript"
 
-[npm-image]: https://img.shields.io/npm/v/adonis6-swagger.svg?style=for-the-badge&logo=npm
-[npm-url]: https://npmjs.org/package/adonis6-swagger "npm"
+[npm-image]: https://img.shields.io/npm/v/adonis5-swagger.svg?style=for-the-badge&logo=npm
+[npm-url]: https://npmjs.org/package/adonis5-swagger "npm"
 
-[license-image]: https://img.shields.io/npm/l/adonis6-swagger?color=blueviolet&style=for-the-badge
+[license-image]: https://img.shields.io/npm/l/adonis5-swagger?color=blueviolet&style=for-the-badge
 [license-url]: LICENSE.md "license"
