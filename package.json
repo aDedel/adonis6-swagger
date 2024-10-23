@@ -1,7 +1,7 @@
 {
   "name": "@dedel.alex/adonis6-swagger",
   "description": "Swagger provider for AdonisJS 6",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "build/index.js",
   "type": "module",
   "files": [
